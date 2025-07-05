@@ -49,28 +49,47 @@ src-tauri/
 ### Backend (src-tauri)
 
 commands.rs: this is where tauri commands are declared and exposed to the frontend
+
 ollama_service.rs: contains the OllamaService, abstracting interaction with ollama models
+
 lib.rs: initializes the tauri app, second entry point, sets up commands and state management
+
 main.rs: main entry point, calls run in lib.rs
 
 ### Frontend (src)
 
 core/state.js: manages the state of the tauri app
+
 core/tauri-api.js: wraps all backend functions and exposes for use in frontend 
+
 core/constants.js: contains various relevant frontend constants
+
 features/chat.js: manages the conversation flow, updates the UI, and send prompts to selected models
+
 features/conversations.js: singleton conversation management, and manages past conversations list
+
 features/streaming.js: sets up the event listeners for streaming ollama tokens, updates the messages, and handles context tokens
+
 features/initialization.js: sets up services and initial ui states
+
 features/keyboard.js: handles keyboard interactions- commands + shortcuts
+
 features/preferences.js: manages and applies editor preferences
+
 ui/menus.js: dropdown interaction, and action handling
+
 ui/messages.js: creates message displays, and manages the past conversations lists
+
 ui/modals.js: preferences modal management
+
 ui/status.js: manages the bottom status bar
+
 ui/window-controls.js: minimize, maximize, close and other window commands
+
 utils/dom.js: abstraction for dom interactions
+
 utils/events.js: abstraction for event interactions
+
 main.js: Main entry point
 
 #### EVENT FLOWS
