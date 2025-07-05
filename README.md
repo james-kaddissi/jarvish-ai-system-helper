@@ -10,7 +10,7 @@ everyones productivity, whether you are a student or professional.
 **Frontend:** Vanilla JavaScript, HTML, CSS with Tauri framework
 **AI Integration:** Ollama local LLM models (APIs soon)
 **Database:** SQLite for main storage, Qdrant for vectors
-
+```
 src/
 ├── index.html
 ├── main.js
@@ -45,7 +45,7 @@ src-tauri/
 │   ├── main.js
 │   ├── ollama_service.js
 └── icons/
-
+```
 ### Backend (src-tauri)
 
 commands.rs: this is where tauri commands are declared and exposed to the frontend
