@@ -11,6 +11,7 @@ import { DOM, MESSAGE_TYPES, STATUS_TYPES } from '../core/constants.js';
 import { showStatus } from '../ui/status.js';
 import { clearMessageHistory, addMessage } from '../ui/messages.js';
 import { createElement } from '../utils/dom.js';
+import { customConfirm } from '../ui/confirm-modal.js';
 
 class ConversationManager {
   constructor() {
@@ -187,7 +188,12 @@ class ConversationManager {
   }
 
   async deleteConversationById(conversationId) {
-    if (!confirm('Are you sure you want to delete this conversation?')) {
+    const confirmed = await customConfirm.show(
+      'Are you sure you want to delete this conversation? This action cannot be undone.',
+      'Delete Conversation'
+    );
+
+    if (!confirmed) {
       return;
     }
 

@@ -10,9 +10,9 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "jaurvish",
-        "width": 800,
-        "height": 600,
+        "title": "J. A. R. V. I. S. H.",
+        "width": 1920,
+        "height": 1080,
         "resizable": true,
         "fullscreen": false,
         "decorations": false,

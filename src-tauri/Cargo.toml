@@ -17,6 +17,9 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
+[target.x86_64-pc-windows-msvc]
+linker = "rust-lld"
+
 [dependencies]
 tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
@@ -27,7 +30,7 @@ tokio-stream = "0.1"
 futures-util = "0.3.31"
 tokio-util = "0.7"
 tokio = { version = "1.0", features = ["full"] }
-rusqlite = "0.36.0"
+rusqlite = { version = "0.36.0", features = ["bundled"] }
 chrono = "0.4.41"
 uuid = "1.17.0"
 rand = "0.9.1"

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -15,11 +15,21 @@
         <span class="app-title">J.A.R.V.I.S.H.</span>
         <div class="menu-bar">
           <div class="menu-container">
-            <button class="menu-item" data-tauri-drag-region="false" data-menu="file">File</button>
+            <button
+              class="menu-item"
+              data-tauri-drag-region="false"
+              data-menu="file"
+            >
+              File
+            </button>
             <div class="dropdown-menu" id="file-menu">
-              <div class="menu-option" data-action="new-conversation">New Conversation</div>
+              <div class="menu-option" data-action="new-conversation">
+                New Conversation
+              </div>
               <div class="menu-separator"></div>
-              <div class="menu-option" data-action="preferences">Preferences</div>
+              <div class="menu-option" data-action="preferences">
+                Preferences
+              </div>
               <div class="menu-separator"></div>
               <div class="menu-option" data-action="exit">Exit</div>
             </div>
@@ -27,9 +37,27 @@
         </div>
       </div>
       <div class="titlebar-right">
-        <button class="titlebar-button" id="minimize-btn" data-tauri-drag-region="false">−</button>
-        <button class="titlebar-button" id="maximize-btn" data-tauri-drag-region="false">□</button>
-        <button class="titlebar-button close" id="close-btn" data-tauri-drag-region="false">×</button>
+        <button
+          class="titlebar-button"
+          id="minimize-btn"
+          data-tauri-drag-region="false"
+        >
+          −
+        </button>
+        <button
+          class="titlebar-button"
+          id="maximize-btn"
+          data-tauri-drag-region="false"
+        >
+          □
+        </button>
+        <button
+          class="titlebar-button close"
+          id="close-btn"
+          data-tauri-drag-region="false"
+        >
+          ×
+        </button>
       </div>
     </div>
 
@@ -41,11 +69,11 @@
         <button id="new-conversation-btn">New Conversation</button>
         <button id="save-conversation-btn" disabled>💾 Save</button>
       </div>
-      
+
       <div class="conversation-area">
         <div id="conversation-history"></div>
       </div>
-      
+
       <div class="input-area">
         <input id="prompt-input" type="text" placeholder="Ask something..." />
         <button id="send-btn" disabled>→</button>
@@ -60,14 +88,14 @@
       <div class="sidebar-top">
         <div class="sidebar-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            <path
+              d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+            />
           </svg>
         </div>
       </div>
-      <div class="sidebar-bottom">
-
-      </div>
-    </div> 
+      <div class="sidebar-bottom"></div>
+    </div>
 
     <div class="footer-bar">
       <div class="footer-left">
@@ -77,8 +105,8 @@
         <span id="version-info">Version 1.0.0</span>
       </div>
     </div>
-    
-    <div id="preferences-modal" class="modal" style="display: none;">
+
+    <div id="preferences-modal" class="modal" style="display: none">
       <div class="modal-content">
         <div class="modal-header">
           <h3>Preferences</h3>
@@ -95,7 +123,13 @@
           </div>
           <div class="preference-group">
             <label>Font Size:</label>
-            <input type="range" id="font-size-slider" min="12" max="20" value="16" />
+            <input
+              type="range"
+              id="font-size-slider"
+              min="12"
+              max="20"
+              value="16"
+            />
             <span id="font-size-value">16px</span>
           </div>
           <div class="preference-group">
@@ -106,6 +140,34 @@
         <div class="modal-footer">
           <button id="save-preferences">Save</button>
           <button id="cancel-preferences">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Confirm Deletion</h3>
+        </div>
+        <div class="modal-body">
+          <p class="modal-message" id="confirmMessage">
+            Are you sure you want to delete this conversation? This action
+            cannot be undone.
+          </p>
+        </div>
+        <div class="modal-actions">
+          <button
+            class="modal-btn modal-btn-cancel"
+            onclick="window.customConfirm.hide(false)"
+          >
+            Cancel
+          </button>
+          <button
+            class="modal-btn modal-btn-confirm"
+            onclick="window.customConfirm.hide(true)"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
