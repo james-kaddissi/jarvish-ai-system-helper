@@ -1,4 +1,4 @@
-import { listen, abortStreamRequest } from '../core/tauri-api.js';
+import { logMessage, listen, abortStreamRequest } from '../core/tauri-api.js';
 import { appState, updateGenerationState } from '../core/state.js';
 import { createAssistantMessage, updateCurrentMessage } from '../ui/messages.js';
 import { showStatus } from '../ui/status.js';
@@ -18,12 +18,12 @@ export function setupStreamingListeners() {
   });
 
   listen("ollama-complete", (event) => {
-    console.log("Stream completed");
+    logMessage("Stream completed");
     finishGeneration();
   });
 
   listen("ollama-cancelled", (event) => {
-    console.log("Stream cancelled");
+    logMessage("Stream cancelled");
     
     if (appState.currentAssistantMessage) {
       const finalResponse = appState.currentResponse + " [Cancelled]";
@@ -35,7 +35,7 @@ export function setupStreamingListeners() {
   });
 
   listen("ollama-error", (event) => {
-    console.log("Stream error:", event.payload);
+    logMessage("Stream error:", event.payload);
     
     if (appState.currentAssistantMessage) {
       const finalResponse = appState.currentResponse + " [Error: " + event.payload + "]";
@@ -50,7 +50,7 @@ export function setupStreamingListeners() {
 export async function abortStream() {
   try {
     await abortStreamRequest();
-    console.log("Stream aborted");
+    logMessage("Stream aborted");
     showStatus("Stream aborted", STATUS_TYPES.WARNING);
   } catch (e) {
     console.error("Error aborting stream:", e);

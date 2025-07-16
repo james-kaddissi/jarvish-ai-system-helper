@@ -1,5 +1,5 @@
 import { setActiveDropdown, clearActiveDropdown, appState } from '../core/state.js';
-import { closeWindow } from '../core/tauri-api.js';
+import { logMessage, closeWindow } from '../core/tauri-api.js';
 import { startNewConversation } from '../features/chat.js';
 import { showEditorPreferencesModal } from './modals.js';
 import { showStatus } from './status.js';
@@ -57,7 +57,7 @@ export function setupMenuSystem() {
 }
 
 async function handleMenuAction(action) {
-  console.log('Menu action:', action);
+  logMessage('Menu action:', action);
   
   switch (action) {
     case 'new-conversation':

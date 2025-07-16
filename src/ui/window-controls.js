@@ -1,5 +1,5 @@
 import { DOM } from '../core/constants.js';
-import { minimizeWindow, toggleMaximizeWindow, closeWindow } from '../core/tauri-api.js';
+import { logMessage, minimizeWindow, toggleMaximizeWindow, closeWindow } from '../core/tauri-api.js';
 
 export function setupWindowControls() {
   if (DOM.minimizeBtn) {
@@ -8,7 +8,7 @@ export function setupWindowControls() {
       e.stopPropagation();
       try {
         await minimizeWindow();
-        console.log("Window minimized");
+        logMessage("Window minimized");
       } catch (error) {
         console.error("Failed to minimize window:", error);
       }
@@ -21,7 +21,7 @@ export function setupWindowControls() {
       e.stopPropagation();
       try {
         await toggleMaximizeWindow();
-        console.log("Window maximize toggled");
+        logMessage("Window maximize toggled");
       } catch (error) {
         console.error("Failed to toggle maximize:", error);
       }
@@ -34,7 +34,7 @@ export function setupWindowControls() {
       e.stopPropagation();
       try {
         await closeWindow();
-        console.log("Window closing");
+        logMessage("Window closing");
       } catch (error) {
         console.error("Failed to close window:", error);
       }

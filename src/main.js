@@ -11,19 +11,20 @@ import { sendPrompt, startNewConversation, onModelChange } from './features/chat
 import { abortStream } from './features/streaming.js';
 import { showStatus } from './ui/status.js';
 import { initializeConversationManager, saveCurrentConversationFromManager } from './features/conversations.js';
+import { logMessage } from './core/tauri-api.js';
 
-console.log("J.A.R.V.I.S.H. interface loaded");
+logMessage("J.A.R.V.I.S.H. interface loaded", "info");
 
 function setupEventListeners() {
   if (DOM.sendBtn) {
-    DOM.sendBtn.addEventListener("click", sendPrompt);
+    DOM.sendBtn.addEventListener("click", sendPrompt); // sendPrompt on button click
   }
 
   if (DOM.promptInput) {
-    DOM.promptInput.addEventListener("keypress", (e) => {
+    DOM.promptInput.addEventListener("keypress", (e) => { // allow submitting prompt with Enter key
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        if (appState.isGenerating) {
+        if (appState.isGenerating) {  // enter during generation aborts the stream early
           abortStream();
         } else {
           sendPrompt();
@@ -33,14 +34,15 @@ function setupEventListeners() {
   }
 
   if (DOM.newConversationBtn) {
-    DOM.newConversationBtn.addEventListener("click", startNewConversation);
+    DOM.newConversationBtn.addEventListener("click", startNewConversation); // start a new conversation
   }
 
   if (DOM.saveConversationBtn) {
-    DOM.saveConversationBtn.addEventListener("click", async () => {
+    DOM.saveConversationBtn.addEventListener("click", async () => { // save the current conversation
       try {
         await saveCurrentConversationFromManager();
         showStatus("Conversation saved manually", "success");
+        logMessage("Conversation saved manually", "info");
       } catch (error) {
         console.error("Error saving conversation:", error);
         showStatus("Failed to save conversation", "error");
@@ -49,12 +51,12 @@ function setupEventListeners() {
   }
 
   if (DOM.modelSelector) {
-    DOM.modelSelector.addEventListener("change", onModelChange);
+    DOM.modelSelector.addEventListener("change", onModelChange); // attached to model dropdown
   }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log("Initializing application...");
+  logMessage("Initializing application...", "info");
   
   try {
     await loadEditorPreferences();
@@ -70,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     await initializeConversationManager();
     
-    console.log("Application initialized successfully");
+    logMessage("Application initialized successfully");
   } catch (error) {
     console.error("Failed to initialize application:", error);
     showStatus("Failed to initialize application", "error");

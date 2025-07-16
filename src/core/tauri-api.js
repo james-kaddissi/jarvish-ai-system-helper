@@ -4,12 +4,20 @@ const { getCurrentWindow } = window.__TAURI__.window;
 
 export { invoke, listen, getCurrentWindow };
 
+export async function logMessage(message, level="info") {
+  return await invoke("log_message", { message, level });
+}
+
 export async function checkOllamaStatus() {
   return await invoke("check_ollama_status");
 }
 
 export async function getAvailableModels() {
   return await invoke("get_available_models");
+}
+
+export async function getModelInfo(modelName) {
+  return await invoke("get_model_info", { modelName });
 }
 
 export async function streamPrompt(prompt, model) {

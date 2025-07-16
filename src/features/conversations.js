@@ -1,4 +1,5 @@
 import { 
+  logMessage,
   getConversations, 
   loadConversation, 
   deleteConversation, 
@@ -14,7 +15,7 @@ import { createElement } from '../utils/dom.js';
 import { customConfirm } from '../ui/confirm-modal.js';
 
 class ConversationManager {
-  constructor() {
+  constructor() { // initialize properties to default values. pastConversationsList is a physical DOM element
     this.conversations = [];
     this.currentConversationId = null;
     this.pastConversationsList = document.getElementById('past-conversations-list');
@@ -28,7 +29,7 @@ class ConversationManager {
       await this.loadConversations();
       this.setupEventListeners();
       this.isInitialized = true;
-      console.log('Conversation manager initialized');
+      logMessage('Conversation manager initialized');
     } catch (error) {
       console.error('Failed to initialize conversation manager:', error);
       showStatus('Failed to load conversations', STATUS_TYPES.ERROR);
@@ -39,7 +40,7 @@ class ConversationManager {
     try {
       this.conversations = await getConversations();
       this.renderConversationsList();
-      console.log(`Loaded ${this.conversations.length} conversations`);
+      logMessage(`Loaded ${this.conversations.length} conversations`);
     } catch (error) {
       console.error('Error loading conversations:', error);
       this.conversations = [];
@@ -61,7 +62,7 @@ class ConversationManager {
         <div class="conversation-preview">No conversations yet</div>
         <div class="conversation-date">Start a new conversation to get started</div>
       `;
-      this.pastConversationsList.appendChild(emptyItem);
+      this.pastConversationsList.appendChild(emptyItem); // this shows when there is no conversation history
       return;
     }
 
@@ -130,7 +131,7 @@ class ConversationManager {
       }
 
       if (this.currentConversationId === conversationId) {
-        console.log('Conversation already loaded:', conversationId);
+        logMessage('Conversation already loaded:', conversationId);
         return;
       }
 
@@ -158,11 +159,11 @@ class ConversationManager {
         }
 
         showStatus(`Loaded conversation: ${conversation.title}`, STATUS_TYPES.SUCCESS);
-        console.log('Conversation loaded:', conversationId);
+        logMessage('Conversation loaded:', conversationId);
         
       } catch (loadError) {
         if (loadError.includes('Query returned no rows') || loadError.includes('Failed to load conversation')) {
-          console.log('Conversation not found in database, treating as new conversation');
+          logMessage('Conversation not found in database, treating as new conversation');
           
           this.currentConversationId = conversationId;
           clearConversation();
@@ -212,7 +213,7 @@ class ConversationManager {
       }
 
       showStatus('Conversation deleted', STATUS_TYPES.SUCCESS);
-      console.log('Conversation deleted:', conversationId);
+      logMessage('Conversation deleted:', conversationId);
 
     } catch (error) {
       console.error('Error deleting conversation:', error);
@@ -220,7 +221,7 @@ class ConversationManager {
     }
   }
 
-  async createNewConversation() {
+  async startNewConversation() {
     try {
       const selectedModel = DOM.modelSelector?.value;
       if (!selectedModel) {
@@ -234,23 +235,14 @@ class ConversationManager {
       clearConversation();
       clearMessageHistory();
       
-      this.conversations.unshift({
-        id: newConversation.id,
-        title: newConversation.title,
-        preview: 'New conversation (unsaved)',
-        model: newConversation.model,
-        created_at: newConversation.created_at,
-        updated_at: newConversation.updated_at,
-        token_count: 0,
-        message_count: 0
+      document.querySelectorAll('.conversation-item').forEach(item => {
+        item.classList.remove('active');
       });
-      this.renderConversationsList();
-      this.setActiveConversation(newConversation.id);
       
       addMessage('New conversation started', MESSAGE_TYPES.SYSTEM);
       showStatus('New conversation created', STATUS_TYPES.SUCCESS);
       
-      console.log('New conversation created:', newConversation.id);
+      logMessage('New conversation created:', newConversation.id);
       return newConversation;
 
     } catch (error) {
@@ -266,9 +258,10 @@ class ConversationManager {
     }
 
     try {
+      const currentTitle = this.generateTitle();
       const conversation = {
         id: this.currentConversationId,
-        title: this.generateTitle(),
+        title: currentTitle,
         messages: appState.currentConversation.map(msg => ({
           role: msg.type,
           content: msg.content,
@@ -282,20 +275,18 @@ class ConversationManager {
 
       await saveConversation({ conversation });
       
-      if (appState.currentConversation.length === 2) {
-        const firstUserMessage = appState.currentConversation.find(msg => msg.type === 'user');
-        if (firstUserMessage) {
-          await updateConversationTitle({
-            conversationId: this.currentConversationId,
-            firstMessage: firstUserMessage.content
-          });
-        }
+      const firstUserMessage = appState.currentConversation.find(msg => msg.type === 'user');
+      if (firstUserMessage) {
+        await updateConversationTitle({
+          conversationId: this.currentConversationId,
+          firstMessage: firstUserMessage.content
+        });
       }
       
       await this.loadConversations();
       this.setActiveConversation(this.currentConversationId);
       
-      console.log('Conversation saved:', this.currentConversationId);
+      logMessage('Conversation saved:', this.currentConversationId);
 
     } catch (error) {
       console.error('Error saving conversation:', error);
@@ -378,7 +369,7 @@ export async function initializeConversationManager() {
 }
 
 export async function createNewConversationFromManager() {
-  return await conversationManager.createNewConversation();
+  return await conversationManager.startNewConversation();
 }
 
 export async function saveCurrentConversationFromManager() {

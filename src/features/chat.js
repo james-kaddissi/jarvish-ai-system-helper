@@ -1,5 +1,5 @@
 import { DOM, MESSAGES, MESSAGE_TYPES, STATUS_TYPES } from '../core/constants.js';
-import { streamPrompt, resetContext } from '../core/tauri-api.js';
+import { logMessage, streamPrompt, resetContext } from '../core/tauri-api.js';
 import { clearConversation, updateGenerationState, addToConversation, appState, setAvailableModels } from '../core/state.js';
 import { addMessage, clearMessageHistory } from '../ui/messages.js';
 import { showStatus } from '../ui/status.js';
@@ -24,7 +24,7 @@ export async function startNewConversation() {
 
   try {
     await resetContext();
-    console.log("Context reset successfully");
+    logMessage("Context reset successfully");
 
     const newConversation = await createNewConversationFromManager();
     if (newConversation) {
@@ -48,12 +48,12 @@ export async function sendPrompt() {
     return;
   }
 
-  console.log("Sending prompt:", prompt, "with model:", selectedModel);
+  logMessage("Sending prompt:", prompt, "with model:", selectedModel);
 
   if (!hasActiveConversation()) {
     const newConversation = await createNewConversationFromManager();
     if (!newConversation) {
-      console.log("Failed to create new conversation");
+      logMessage("Failed to create new conversation");
       showStatus("Failed to create conversation", STATUS_TYPES.ERROR);
       return;
     }
@@ -72,7 +72,7 @@ export async function sendPrompt() {
 
   try {
     await streamPrompt(prompt, selectedModel);
-    console.log("Streaming completed");
+    logMessage("Streaming completed");
 
   } catch (error) {
     console.error("Error during streaming:", error);
@@ -104,6 +104,7 @@ export async function finishGeneration() {
   updateSaveButtonState();
 
   if (appState.editorPreferences.autoSave && hasActiveConversation()) {
+    logMessage("Auto-saving conversation after generationnnnnnnnnnnnnnnnnnnnnn");
     try {
       await saveCurrentConversationFromManager();
     } catch (error) {

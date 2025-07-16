@@ -1,9 +1,11 @@
 mod commands;
 mod ollama_service;
+mod logger;
 
 use std::sync::Mutex;
 use tokio::sync::Mutex as AsyncMutex;
 use tokio_util::sync::CancellationToken;
+use logger::log_message;
 
 pub struct ConversationState {
     pub context: Mutex<Option<Vec<u8>>>,
@@ -25,10 +27,12 @@ pub fn run() {
             }),
         })
         .invoke_handler(tauri::generate_handler![
+            commands::log_message,
             commands::stream_prompt,
             commands::abort_stream,
             commands::reset_context,
             commands::get_available_models,
+            commands::get_model_info,
             commands::check_ollama_status,
             commands::save_editor_preferences,
             commands::load_editor_preferences,
@@ -42,5 +46,5 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
         
-    println!("Tauri application has ended");
+    log_message("Tauri application has ended", None);
 }

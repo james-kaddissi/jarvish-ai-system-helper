@@ -1,7 +1,27 @@
 use reqwest;
 use serde_json::{json, Value};
 use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ModelInfo {
+    pub modelfile: Option<String>,
+    pub parameters: Option<String>,
+    pub template: Option<String>,
+    pub details: Option<ModelDetails>,
+    pub model_info: Option<HashMap<String, Value>>,
+    pub capabilities: Option<Vec<String>>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ModelDetails {
+    pub parent_model: Option<String>,
+    pub format: Option<String>,
+    pub family: Option<String>,
+    pub families: Option<Vec<String>>,
+    pub parameter_size: Option<String>,
+    pub quantization_level: Option<String>,
+}
 pub struct OllamaService {
     base_url: String,
     client: reqwest::Client,
@@ -41,6 +61,31 @@ impl OllamaService {
         
         println!("Found {} models", models.len());
         Ok(models)
+    }
+
+    pub async fn get_model_info(&self, model_name: &str) -> Result<ModelInfo, String> {
+        println!("Getting model info for: {}", model_name);
+        
+        let payload = json!({
+            "model": model_name
+        });
+
+        let response = self.client
+            .post(&format!("{}/api/show", self.base_url))
+            .json(&payload)
+            .send()
+            .await
+            .map_err(|e| format!("Failed to get model info: {}", e))?;
+
+        if !response.status().is_success() {
+            return Err(format!("Request failed with status: {}", response.status()));
+        }
+
+        let model_info: ModelInfo = response.json().await
+            .map_err(|e| format!("Failed to parse model info response: {}", e))?;
+
+        println!("Successfully retrieved model info for: {}", model_name);
+        Ok(model_info)
     }
 
     pub async fn generate_stream(

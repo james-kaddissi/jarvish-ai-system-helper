@@ -1,4 +1,4 @@
-use crate::ollama_service::OllamaService;
+use crate::ollama_service::{OllamaService, ModelInfo};
 use std::collections::HashMap;
 use crate::ConversationState;
 use serde_json::Value;
@@ -9,7 +9,8 @@ use tokio_util::sync::CancellationToken;
 use rusqlite::{params, Connection, Result as SqlResult};
 use chrono::Utc;
 use rand::Rng;
-use std::path::PathBuf; 
+use std::path::PathBuf;
+use crate::logger::process_log; 
 
 fn get_app_data_dir(app_handle: &AppHandle) -> Result<PathBuf, String> {
     app_handle
@@ -57,6 +58,11 @@ pub struct EditorPreferences {
     theme: String,
     font_size: i64,
     auto_save: bool,
+}
+
+#[tauri::command]
+pub fn log_message(message: String, level: String) {
+    process_log(message, level);
 }
 
 // main command for streaming a prompt to Ollama
@@ -202,6 +208,14 @@ pub async fn get_available_models() -> Result<Vec<String>, String> {
     
     let ollama = OllamaService::new(None);
     ollama.get_models().await
+}
+
+#[tauri::command]
+pub async fn get_model_info(model_name: String) -> Result<ModelInfo, String> {
+    println!("get_model_info called for model: {}", model_name);
+    
+    let ollama = OllamaService::new(None);
+    ollama.get_model_info(&model_name).await
 }
 
 // gets the health status of the Ollama service

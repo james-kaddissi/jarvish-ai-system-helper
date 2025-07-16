@@ -1,0 +1,33 @@
+.footer-bar {
+  grid-area: footer;
+  background: #121212;
+  padding: 2px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  border-top: 1px solid #3A3A3A;
+}
+
+.footer-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-text.success {
+  color: #4caf50;
+}
+
+.footer-text.error {
+  color: #f44336;
+}
+
+.footer-text.warning {
+  color: #ff9800;
+}
+
+.footer-text.info {
+  color: #2196f3;
+}

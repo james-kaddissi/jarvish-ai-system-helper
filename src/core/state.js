@@ -1,3 +1,5 @@
+import { abortStreamRequest } from "./tauri-api.js";
+
 export const appState = {
   availableModels: [],
   currentConversation: [],
@@ -30,6 +32,9 @@ export function addToConversation(type, content) {
 }
 
 export function clearConversation() {
+  if(appState.isGenerating){
+    abortStreamRequest(); // abort any ongoing stream before clearing
+  }
   appState.currentConversation = [];
 }
 
