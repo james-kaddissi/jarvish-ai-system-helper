@@ -31,11 +31,11 @@ export async function initializeApp() {
     enableChatControls();
     
     showStatus(MESSAGES.READY, STATUS_TYPES.SUCCESS);
-    addMessage(`✅ Connected to Ollama. ${availableModels.length} models available.`, MESSAGE_TYPES.SYSTEM);
+    addMessage(`Connected to Ollama. ${availableModels.length} models available.`, MESSAGE_TYPES.SYSTEM);
     
   } catch (error) {
     console.error("Error initializing app:", error);
     showStatus("Failed to connect to Ollama", STATUS_TYPES.ERROR);
-    addMessage("❌ Error connecting to Ollama: " + error, MESSAGE_TYPES.SYSTEM);
+    addMessage("Error connecting to Ollama: " + error, MESSAGE_TYPES.SYSTEM);
   }
 }

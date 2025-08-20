@@ -1,7 +1,7 @@
 import { setActiveDropdown, clearActiveDropdown, appState } from '../core/state.js';
 import { logMessage, closeWindow } from '../core/tauri-api.js';
 import { startNewConversation } from '../features/chat.js';
-import { showEditorPreferencesModal } from './modals.js';
+import { saveCurrentConversationFromManager } from '../features/conversations.js';
 import { showStatus } from './status.js';
 import { STATUS_TYPES } from '../core/constants.js';
 
@@ -64,8 +64,13 @@ async function handleMenuAction(action) {
       await startNewConversation();
       break;
       
-    case 'preferences':
-      showEditorPreferencesModal();
+    case 'save-conversation':
+      try {
+        await saveCurrentConversationFromManager();
+        showStatus("Conversation saved successfully", STATUS_TYPES.SUCCESS);
+      } catch (error) {
+        showStatus("Failed to save conversation", STATUS_TYPES.ERROR);
+      }
       break;
       
     case 'exit':

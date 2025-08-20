@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/footer.css" />
     <link rel="stylesheet" href="styles/modal.css" />
     <link rel="stylesheet" href="styles/animations.css" />
+    <link rel="stylesheet" href="styles/interactable.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>J.A.R.V.I.S.H.</title>
     <script type="module" src="/main.js" defer></script>
@@ -32,9 +33,8 @@
               <div class="menu-option" data-action="new-conversation">
                 New Conversation
               </div>
-              <div class="menu-separator"></div>
-              <div class="menu-option" data-action="preferences">
-                Preferences
+              <div class="menu-option" data-action="save-conversation">
+                Save Conversation
               </div>
               <div class="menu-separator"></div>
               <div class="menu-option" data-action="exit">Exit</div>
@@ -66,20 +66,17 @@
         </button>
       </div>
     </div>
-
     <div class="main-container">
       <div class="controls">
         <select id="model-selector" disabled>
           <option value="">Loading models...</option>
         </select>
         <button id="new-conversation-btn">New Conversation</button>
-        <button id="save-conversation-btn" disabled>💾 Save</button>
+        <button id="save-conversation-btn" disabled>Save</button>
       </div>
-
       <div class="conversation-area">
         <div id="conversation-history"></div>
       </div>
-
       <div class="input-area">
         <input id="prompt-input" type="text" placeholder="Ask something..." />
         <button id="send-btn" disabled>→</button>
@@ -89,14 +86,57 @@
       <h3>Past Conversations</h3>
       <ul id="past-conversations-list"></ul>
     </div>
+    <div class="qagent" hidden>
+      <h2>Quick Agent</h2>
+      <div class="qagent-editor-canvas" id="qagentEditorCanvas">
+        <svg class="wires-canvas" id="wiresCanvas" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="currentColor"></polygon>
+            </marker>
+          </defs>
+        </svg>
 
+        <div class="qagent-node" id="qagentNodeA" style="left:80px; top:80px;">
+          <div class="header">Math</div>
+          <div class="body">
+            <div class="port-row">
+              <span>a</span>
+              <span class="port input"  data-port-id="A:in:a"></span>
+            </div>
+            <div class="port-row">
+              <span>b</span>
+              <span class="port input"  data-port-id="A:in:b"></span>
+            </div>
+            <div class="port-row">
+              <span>sum</span>
+              <span class="port output" data-port-id="A:out:sum"></span>
+            </div>
+          </div>
+        </div>
+        <div class="qagent-node" id="qagentNodeB" style="left:480px; top:240px;">
+          <div class="header">Display</div>
+          <div class="body">
+            <div class="port-row">
+              <span>value</span>
+              <span class="port input" data-port-id="B:in:value"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="sidebar">
       <div class="sidebar-top">
-        <div class="sidebar-icon">
+        <div class="sidebar-icon" data-action="quick-chat">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
             />
+          </svg>
+        </div>
+        <div class="sidebar-icon" data-action="quick-agent">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M5,7A1,1,0,0,0,4,8V22a1,1,0,0,0,1,1H19a1,1,0,0,0,1-1V8a1,1,0,0,0-1-1H13V4.723a2,2,0,1,0-2,0V7ZM18,9V21H6V9ZM7,13a1,1,0,0,1,1-1h2a1,1,0,0,1,0,2H8A1,1,0,0,1,7,13Zm6,0a1,1,0,0,1,1-1h2a1,1,0,0,1,0,2H14A1,1,0,0,1,13,13ZM1,14V12a1,1,0,0,1,2,0v2a1,1,0,0,1-2,0Zm22-2v2a1,1,0,0,1-2,0V12a1,1,0,0,1,2,0ZM7,18a1,1,0,0,1,1-1h8a1,1,0,0,1,0,2H8A1,1,0,0,1,7,18Z"/>
           </svg>
         </div>
       </div>
@@ -109,44 +149,6 @@
       </div>
       <div class="footer-right">
         <span id="version-info">Version 1.0.0</span>
-      </div>
-    </div>
-
-    <div id="preferences-modal" class="modal" style="display: none">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Preferences</h3>
-          <button class="modal-close">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="preference-group">
-            <label>Theme:</label>
-            <select id="theme-selector">
-              <option value="default">Default Blue</option>
-              <option value="dark">Dark</option>
-              <option value="light">Light</option>
-            </select>
-          </div>
-          <div class="preference-group">
-            <label>Font Size:</label>
-            <input
-              type="range"
-              id="font-size-slider"
-              min="12"
-              max="20"
-              value="16"
-            />
-            <span id="font-size-value">16px</span>
-          </div>
-          <div class="preference-group">
-            <label>Auto-save Conversations:</label>
-            <input type="checkbox" id="auto-save-checkbox" checked />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button id="save-preferences">Save</button>
-          <button id="cancel-preferences">Cancel</button>
-        </div>
       </div>
     </div>
 

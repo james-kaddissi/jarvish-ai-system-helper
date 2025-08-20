@@ -1,17 +1,17 @@
 import { DOM } from './core/constants.js';
 import { appState } from './core/state.js';
 import { setupMenuSystem } from './ui/menus.js';
-import { setupPreferencesModal } from './ui/modals.js';
 import { setupWindowControls } from './ui/window-controls.js';
 import { setupStreamingListeners } from './features/streaming.js';
 import { setupKeyboardShortcuts } from './features/keyboard.js';
-import { loadEditorPreferences } from './features/preferences.js';
 import { initializeApp } from './features/initialization.js';
 import { sendPrompt, startNewConversation, onModelChange } from './features/chat.js';
 import { abortStream } from './features/streaming.js';
 import { showStatus } from './ui/status.js';
 import { initializeConversationManager, saveCurrentConversationFromManager } from './features/conversations.js';
 import { logMessage } from './core/tauri-api.js';
+import { setupSidebar } from './features/sidebar.js';
+import { initializeInteractables } from './features/interactable.js';
 
 logMessage("J.A.R.V.I.S.H. interface loaded", "info");
 
@@ -58,21 +58,22 @@ function setupEventListeners() {
 document.addEventListener('DOMContentLoaded', async () => {
   logMessage("Initializing application...", "info");
   
-  try {
-    await loadEditorPreferences();
-    
+  try {  
     setupMenuSystem();
-    setupPreferencesModal();
+    setupSidebar();
     setupKeyboardShortcuts();
     setupWindowControls();
     setupStreamingListeners();
     setupEventListeners();
+    initializeInteractables();
     
     await initializeApp();
     
     await initializeConversationManager();
     
     logMessage("Application initialized successfully");
+
+    
   } catch (error) {
     console.error("Failed to initialize application:", error);
     showStatus("Failed to initialize application", "error");

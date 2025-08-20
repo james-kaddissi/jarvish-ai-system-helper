@@ -4,23 +4,33 @@
   box-sizing: border-box;
 }
 
+:root {
+  --panel:#2a2c33;
+  --wire:#8fd3ff;
+}
+
+[hidden] { display: none !important; }
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #212121 0%, #3b393b 100%); /* Main are background */
+  background: linear-gradient(135deg, #212121 0%, #3b393b 100%); /* Main area background */
   color: #ffffff;
   height: 100vh;
   overflow: hidden;
+
   display: grid;
   grid-template-rows: 32px 1fr 24px;
-  grid-template-areas: 
-    "titlebar titlebar titlebar"
-    "sidebar main past-conversations"
-    "footer footer footer";
-  grid-template-columns: 72px 1fr 300px;
 }
 
-.main-container { /* this is the formatting of the main content area, center of the grid */
-  grid-area: main;
+.titlebar { grid-area: titlebar; }
+.sidebar { grid-area: sidebar; }
+.main-container { grid-area: main; }
+.past-conversations-container { grid-area: past-conversations; }
+.footer-bar { grid-area: footer; }
+.qagent { grid-area: qagent; }
+
+/* Default page styles */
+.main-container {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -30,22 +40,58 @@ body {
   min-height: 0;
 }
 
+.qagent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+body.layout-chat {
+  grid-template-columns: 72px 1fr 300px;
+  grid-template-areas:
+    "titlebar titlebar titlebar"
+    "sidebar main past-conversations"
+    "footer footer footer";
+}
+
+body.layout-agent {
+  grid-template-columns: 72px 1fr 0px;
+  grid-template-areas:
+    "titlebar titlebar titlebar"
+    "sidebar qagent qagent"
+    "footer footer footer";
+}
+
 @media (max-width: 1200px) {
-  body {
+  body.layout-chat {
     grid-template-columns: 60px 1fr 250px;
+  }
+  body.layout-agent {
+    grid-template-columns: 60px 1fr 0px;
   }
 }
 
 @media (max-width: 768px) {
-  body {
+  body.layout-chat {
     grid-template-columns: 60px 1fr;
-    grid-template-areas: 
+    grid-template-areas:
       "titlebar titlebar"
       "sidebar main"
       "footer footer";
   }
-  
-  .main-container {
+  body.layout-agent {
+    grid-template-columns: 60px 1fr;
+    grid-template-areas:
+      "titlebar titlebar"
+      "sidebar qagent"
+      "footer footer";
+  }
+
+  .main-container,
+  .qagent {
     padding: 10px;
   }
 }
